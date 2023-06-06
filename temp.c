@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <math.h>
 
 typedef struct Equipment_Inventory
 {
@@ -65,26 +66,79 @@ void Insert_Sport_Equipment_Management(Node2 **head, Sport_Equipment_Management 
     *head = temp;
 }
 
+void addSpaces(char word[])
+{
+    int len1 = strlen(word);
+    if (len1 < 8)
+    {
+        for (int i = len1; i < 8; i++)
+        {
+            word[i] = ' ';
+        }
+        word[8] = '\0';
+    }
+}
+
 void Display_Equipment_Inventory(Node1 *head)
 {
-    printf("\nsport equipmentName quantity  available  issueQuantity\n");
+    // system("cls");
+    printf("\n\t\t\t=======Equipment Inventory Record=======\n");
+    int i = 1;
+    printf("\nSNo\tSport \t\tEquipment Name\t\tQuantity \tAvailable \tIssueQuantity\n");
+    printf("---------------------------------------------------------------------------------------------\n");
     while (head != NULL)
     {
-        printf("  %s %s %d %d %d\n", head->data.Sport, head->data.equipmentName, head->data.Quantity, head->data.available, head->data.issueQuantity);
+        char sport[50];
+        char equipment[50];
+        strcpy(sport, head->data.Sport);
+        strcpy(equipment, head->data.equipmentName);
+        addSpaces(sport);
+        addSpaces(equipment);
+        printf("%d\t%s\t%s\t\t%d\t\t%d\t\t%d\n", i, sport, equipment, head->data.Quantity, head->data.available, head->data.issueQuantity);
         head = head->next;
+        i++;
     }
+    // printf(" \t Press any key to exit");
+    // getchar();
 }
 
 void Display_Sport_Equipment_Management(Node2 *head)
 {
-    printf("\nincharge  studentID  sport  equipmentName  equipmentID  issueDate  dueDate  returnDate NoOfDaysDelayed fine\n");
+    // system("cls");
+    printf("\n\t\t\t\t\t\t\t=======Sport Equipment Management Record=======\n");
+    int i = 1;
+    printf("\nSNo\tIncharge\tStudent ID\tSport\t\tEquipment Name\tEquipment ID\tIssue date\tDue date\tReturn date\tNo of days delayed\tFine\n");
+    printf("--------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
     while (head != NULL)
     {
-        printf("  %s %ld %s %s %d %d %d %d %d %d\n", head->data.incharge, head->data.studentID, head->data.Sport,
-               head->data.equipmentName, head->data.equipmentID, head->data.issueDate, head->data.dueDate,
-               head->data.returnDate, head->data.NoOfDaysDelayed, head->data.fine);
+        // Calculate Date.
+        int Iday = head->data.issueDate / pow(10, 6);
+        int Imonth = (head->data.issueDate / 10000) % 100;
+        int Iyear = head->data.issueDate % 10000;
+        int Dday = head->data.dueDate / pow(10, 6);
+        int Dmonth = (head->data.dueDate / 10000) % 100;
+        int Dyear = head->data.dueDate % 10000;
+        int Rday = head->data.returnDate / pow(10, 6);
+        int Rmonth = (head->data.returnDate / 10000) % 100;
+        int Ryear = head->data.returnDate % 10000;
+
+        char sport[50];
+        char equipment[50];
+        char Incharge[50];
+        strcpy(Incharge, head->data.incharge);
+        strcpy(sport, head->data.Sport);
+        strcpy(equipment, head->data.equipmentName);
+        // addSpaces(Incharge);
+        addSpaces(sport);
+        addSpaces(equipment);
+        printf("%d\t%s\t\t%ld\t\t%s\t%s\t%s\t\t%d-%d-%d\t%d-%d-%d\t%d-%d-%d\t\t%d\t\t%d\n", i, Incharge,
+               head->data.studentID, sport, equipment, head->data.equipmentID, Iday, Imonth, Iyear,
+               Dday, Dmonth, Dyear, Rday, Rmonth, Ryear, head->data.NoOfDaysDelayed, head->data.fine);
         head = head->next;
+        i++;
     }
+    printf(" \t Press any key to exit");
+    getchar();
 }
 
 void bubbleSort(Node2 *head2)
@@ -172,10 +226,10 @@ int main()
     }
     fclose(fp1);
     fclose(fp2);
-    Display_Equipment_Inventory(head1);
+    // Display_Equipment_Inventory(head1);
     Display_Sport_Equipment_Management(head2);
-    bubbleSort(head2);
-    Display_Sport_Equipment_Management(head2);
-    Student_History(head2, 1210055);
+    // bubbleSort(head2);
+    // Display_Sport_Equipment_Management(head2);
+    // Student_History(head2, 1210055);
     return 0;
 }

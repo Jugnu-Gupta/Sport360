@@ -83,7 +83,7 @@ bool verify(Admin *root, int userId, char pass[])
 bool Verification()
 {
     FILE *fp;
-    fp = fopen("Admin.txt", "r");
+    fp = fopen("./Admin/Admin.txt", "r");
     Admin *root = NULL;
     // call the "createBinaryTree" function.
     CreateBinaryTree(&root, fp);
@@ -157,31 +157,78 @@ void Insert_Sport_Equipment_Management(Node2 **head, Sport_Equipment_Management 
     *head = temp;
 }
 
+void addSpaces(char word[])
+{
+    int len1 = strlen(word);
+    if (len1 < 8)
+    {
+        for (int i = len1; i < 8; i++)
+        {
+            word[i] = ' ';
+        }
+        word[8] = '\0';
+    }
+}
+
 void Display_Equipment_Inventory(Node1 *head)
 {
     system("cls");
-    printf("\t\t\t=======Equipment Inventory Record=======\n");
-    printf("\nsport equipmentName quantity  available  issueQuantity\n");
+    printf("\n\t\t\t=======Equipment Inventory Record=======\n");
+    int i = 1;
+    printf("\nSNo\tSport \t\tEquipment Name\t\tQuantity \tAvailable \tIssueQuantity\n");
+    printf("---------------------------------------------------------------------------------------------\n");
     while (head != NULL)
     {
-        printf("  %s %s %d %d %d\n", head->data.Sport, head->data.equipmentName, head->data.Quantity, head->data.available, head->data.issueQuantity);
+        char sport[50];
+        char equipment[50];
+        strcpy(sport, head->data.Sport);
+        strcpy(equipment, head->data.equipmentName);
+        addSpaces(sport);
+        addSpaces(equipment);
+        printf(" %d\t%s\t%s\t\t%d\t\t%d\t\t%d\n", i, sport, equipment, head->data.Quantity, head->data.available, head->data.issueQuantity);
         head = head->next;
+        i++;
     }
+    printf("\n \t Press any key to exit");
+    getchar();
 }
 
 void Display_Sport_Equipment_Management(Node2 *head)
 {
     system("cls");
-    printf("\t\t=======Sport Equipment Management Record=======\n");
-    printf("\nincharge  studentID  sport  equipmentName  equipmentID  issueDate  dueDate  returnDate NoOfDaysDelayed fine\n");
+    printf("\n\t\t\t\t\t\t\t=======Sport Equipment Management Record=======\n");
+    int i = 1;
+    printf("\nSNo\tIncharge\tStudent ID\tSport\t\tEquipment Name\tEquipment ID\tIssue date\tDue date\tReturn date\tNo of days delayed\tFine\n");
+    printf("--------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
     while (head != NULL)
     {
-        printf("  %s %ld %s %s %s %d %d %d %d %d\n", head->data.incharge, head->data.studentID, head->data.Sport,
-               head->data.equipmentName, head->data.equipmentID, head->data.issueDate, head->data.dueDate,
-               head->data.returnDate, head->data.NoOfDaysDelayed, head->data.fine);
+        // Calculate Date.
+        int Iday = head->data.issueDate / pow(10, 6);
+        int Imonth = (head->data.issueDate / 10000) % 100;
+        int Iyear = head->data.issueDate % 10000;
+        int Dday = head->data.dueDate / pow(10, 6);
+        int Dmonth = (head->data.dueDate / 10000) % 100;
+        int Dyear = head->data.dueDate % 10000;
+        int Rday = head->data.returnDate / pow(10, 6);
+        int Rmonth = (head->data.returnDate / 10000) % 100;
+        int Ryear = head->data.returnDate % 10000;
+
+        char sport[50];
+        char equipment[50];
+        char Incharge[50];
+        strcpy(Incharge, head->data.incharge);
+        strcpy(sport, head->data.Sport);
+        strcpy(equipment, head->data.equipmentName);
+        addSpaces(Incharge);
+        addSpaces(sport);
+        addSpaces(equipment);
+        printf(" %d\t%s\t%ld\t\t%s\t%s\t%s\t\t%d-%d-%d\t%d-%d-%d\t%d-%d-%d\t\t%d\t\t%d\n", i, Incharge,
+               head->data.studentID, sport, equipment, head->data.equipmentID, Iday, Imonth, Iyear,
+               Dday, Dmonth, Dyear, Rday, Rmonth, Ryear, head->data.NoOfDaysDelayed, head->data.fine);
         head = head->next;
+        i++;
     }
-    printf(" \t Press any key to exit");
+    printf("\n \t Press any key to exit");
     getchar();
 }
 
@@ -239,46 +286,92 @@ void Student_History(Node2 *head, long int studID)
 {
     bubbleSort(head);
     system("cls");
-    printf("\t\t=======Student History Record=======\n");
+    printf("\n\t\t\t\t\t\t\t\t=======Student History Record=======\n");
     int flag = 0;
 
-    printf("\nNot returned");
+    int i = 1;
     Node2 *curr = head;
     while (curr != NULL)
     {
-        if (curr->data.studentID == studID && curr->data.returnDate == -1)
+        if (curr->data.studentID == studID && curr->data.returnDate == 0)
         {
             if (flag == 0)
             {
-                printf("\nincharge  studentID  sport  equipmentName  equipmentID  issueDate  dueDate  returnDate NoOfDaysDelayed fine\n");
+                printf("\n Issued equipment");
+                printf("\nSNo\tIncharge\tStudent ID\tSport\t\tEquipment Name\tEquipment ID\tIssue date\tDue date\tReturn date\tNo of days delayed\tFine\n");
+                printf("--------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
             }
+            // Calculate Date.
+            int Iday = curr->data.issueDate / pow(10, 6);
+            int Imonth = (curr->data.issueDate / 10000) % 100;
+            int Iyear = curr->data.issueDate % 10000;
+            int Dday = curr->data.dueDate / pow(10, 6);
+            int Dmonth = (curr->data.dueDate / 10000) % 100;
+            int Dyear = curr->data.dueDate % 10000;
+            int Rday = curr->data.returnDate / pow(10, 6);
+            int Rmonth = (curr->data.returnDate / 10000) % 100;
+            int Ryear = curr->data.returnDate % 10000;
+
+            char sport[50];
+            char equipment[50];
+            char Incharge[50];
+            strcpy(Incharge, curr->data.incharge);
+            strcpy(sport, curr->data.Sport);
+            strcpy(equipment, curr->data.equipmentName);
+            addSpaces(Incharge);
+            addSpaces(sport);
+            addSpaces(equipment);
+            printf(" %d\t%s\t%ld\t\t%s\t%s\t%s\t\t%d-%d-%d\t%d-%d-%d\t%d-%d-%d\t\t%d\t\t%d\n", i, Incharge,
+                   curr->data.studentID, sport, equipment, curr->data.equipmentID, Iday, Imonth, Iyear,
+                   Dday, Dmonth, Dyear, Rday, Rmonth, Ryear, curr->data.NoOfDaysDelayed, curr->data.fine);
+            i++;
             flag++;
-            printf("  %s %ld %s %s %s %d %d %d %d %d\n", head->data.incharge, head->data.studentID, head->data.Sport,
-                   head->data.equipmentName, head->data.equipmentID, head->data.issueDate, head->data.dueDate,
-                   head->data.returnDate, head->data.NoOfDaysDelayed, head->data.fine);
         }
         curr = curr->next;
     }
     if (flag == 0)
     {
-        printf("\n No Equipment to Return");
+        printf("\n No Equipment to Return\n");
     }
 
     flag = 0;
-    printf("\nReturned");
+    i = 0;
     curr = head;
     while (curr != NULL)
     {
-        if (curr->data.studentID == studID && curr->data.returnDate != -1)
+        if (curr->data.studentID == studID && curr->data.returnDate != 0)
         {
             if (flag == 0)
             {
-                printf("\nincharge  studentID  sport  equipmentName  equipmentID  issueDate  dueDate  returnDate NoOfDaysDelayed fine\n");
+                printf("\n Returned equipment");
+                printf("\nSNo\tIncharge\tStudent ID\tSport\t\tEquipment Name\tEquipment ID\tIssue date\tDue date\tReturn date\tNo of days delayed\tFine\n");
+                printf("--------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
             }
+            // Calculate Date.
+            int Iday = curr->data.issueDate / pow(10, 6);
+            int Imonth = (curr->data.issueDate / 10000) % 100;
+            int Iyear = curr->data.issueDate % 10000;
+            int Dday = curr->data.dueDate / pow(10, 6);
+            int Dmonth = (curr->data.dueDate / 10000) % 100;
+            int Dyear = curr->data.dueDate % 10000;
+            int Rday = curr->data.returnDate / pow(10, 6);
+            int Rmonth = (curr->data.returnDate / 10000) % 100;
+            int Ryear = curr->data.returnDate % 10000;
+
+            char sport[50];
+            char equipment[50];
+            char Incharge[50];
+            strcpy(Incharge, curr->data.incharge);
+            strcpy(sport, curr->data.Sport);
+            strcpy(equipment, curr->data.equipmentName);
+            addSpaces(Incharge);
+            addSpaces(sport);
+            addSpaces(equipment);
+            printf(" %d\t%s\t%ld\t\t%s\t%s\t%s\t\t%d-%d-%d\t%d-%d-%d\t%d-%d-%d\t\t%d\t\t%d\n", i, Incharge,
+                   curr->data.studentID, sport, equipment, curr->data.equipmentID, Iday, Imonth, Iyear,
+                   Dday, Dmonth, Dyear, Rday, Rmonth, Ryear, curr->data.NoOfDaysDelayed, curr->data.fine);
+            i++;
             flag++;
-            printf("  %s %ld %s %s %s %d %d %d %d %d\n", head->data.incharge, head->data.studentID, head->data.Sport,
-                   head->data.equipmentName, head->data.equipmentID, head->data.issueDate, head->data.dueDate,
-                   head->data.returnDate, head->data.NoOfDaysDelayed, head->data.fine);
         }
         curr = curr->next;
     }
@@ -381,10 +474,10 @@ int nearest_Availibility_Date(Node2 *head2)
         }
         curr = curr->next;
     }
-    if (min_year != 100000 && min_month != 1 && min_day != -1)
+    if (min_year != 100000 && min_month != 1 && min_day != 1)
         return min_day * 1000000 + min_month * 10000 + min_year;
     else
-        return -1;
+        return 0;
 }
 
 bool check_Quantity(Node1 *head1, char sport[], char equip[])
@@ -412,7 +505,7 @@ void equipment_issue(Node1 *head1, Node2 *head2, char sport[], char equip[])
     if (check_Quantity(head1, sport, equip) == 0)
     {
         int nearestAvailableDate = nearest_Availibility_Date(head2);
-        if (nearestAvailableDate != -1)
+        if (nearestAvailableDate != 0)
         {
             printf(" Desired equipment is not available now!");
             printf("\n Equipment will be available by : %d-%d-%d\n", nearestAvailableDate / 1000000, (nearestAvailableDate % 1000000) / 10000, nearestAvailableDate % 10000);
@@ -441,7 +534,7 @@ void equipment_issue(Node1 *head1, Node2 *head2, char sport[], char equip[])
         time_t t = time(NULL);
         struct tm tm = *localtime(&t);
         equipManage.issueDate = (tm.tm_mday) * 1000000 + (tm.tm_mon + 1) * 10000 + tm.tm_year + 1900;
-        equipManage.returnDate = -1;
+        equipManage.returnDate = 0;
         equipManage.dueDate = updateDate(equipManage.issueDate);
 
         // insert record.
@@ -1038,22 +1131,32 @@ void user_return(Node1 *head1, Node2 *head2)
 void DISPLAY_Equipment_Inventory_By_Sport(Node1 *head1)
 {
     system("cls");
-    printf("\t\t=======Return Sports Equipment=======\n");
+    printf("\n\t\t=======Equipment Inventory Records=======\n\n");
     int flag = 0;
+    int i = 1;
 
-    char sport[50];
+    char sports[50];
     printf("Enter the sports name : ");
-    scanf("%s", sport);
+    scanf("%s", sports);
     while (head1 != NULL)
     {
-        if (strcmp(head1->data.Sport, sport) == 0)
+        if (strcmp(head1->data.Sport, sports) == 0)
         {
             if (flag == 0)
             {
-                printf("\nsport  equipment name  quantity  available  issueQuantity\n");
+                printf("SNo\tSport \t\tEquipment Name\t\tQuantity \tAvailable \tIssueQuantity\n");
+                printf("---------------------------------------------------------------------------------------------\n");
             }
+            char sport[50];
+            char equipment[50];
+            strcpy(sport, head1->data.Sport);
+            strcpy(equipment, head1->data.equipmentName);
+            addSpaces(sport);
+            addSpaces(equipment);
+            printf(" %d\t%s\t%s\t\t%d\t\t%d\t\t%d\n", i, sport, equipment, head1->data.Quantity,
+                   head1->data.available, head1->data.issueQuantity);
             flag++;
-            printf("  %s %s %d %d %d\n", head1->data.Sport, head1->data.equipmentName, head1->data.Quantity, head1->data.available, head1->data.issueQuantity);
+            i++;
         }
         head1 = head1->next;
     }
@@ -1061,7 +1164,7 @@ void DISPLAY_Equipment_Inventory_By_Sport(Node1 *head1)
     {
         printf("\nNo results found?\n\n");
     }
-    printf(" \t Press any key to exit");
+    printf("\n \t Press any key to exit");
     getchar();
 }
 
@@ -1084,7 +1187,7 @@ void Modify_Equipment_Inventory_Quantity(Node1 *head1)
             break;
         }
     }
-    printf(" \t Press any key to exit");
+    printf("\n \t Press any key to exit");
     getchar();
 }
 
@@ -1114,6 +1217,8 @@ void Import_Database(Node1 **head1, Node2 **head2)
         Insert_Sport_Equipment_Management(head2, equipManage);
     }
     fclose(fp);
+    Display_Equipment_Inventory(*head1);
+    Display_Sport_Equipment_Management(*head2);
 }
 
 void Update_Database(Node1 *head1, Node2 *head2)
@@ -1182,7 +1287,7 @@ int main()
             title();
             int user_choose;
             printf("\n\t\tWelcome!!\nYou have logged into the student account.\n");
-            printf(" 1. Issue \n 2. Return \n 3. Check Availibility of sports Equipment \n 4. History\n");
+            printf(" 1. Issue \n 2. Return \n 3. Check Availability of sports Equipment \n 4. History\n");
             printf(" Enter your work : ");
             scanf("%d", &user_choose);
             switch (user_choose)
@@ -1212,7 +1317,7 @@ int main()
             title();
             int admin_choose;
             printf("\n\t\tWelcome!!\nYou have logged into the admin account\n");
-            printf("1: Display equipments inventory \n2: Display equipments inventory by  sports name \n3: Modify equipment quantity record \n4: Insert record of equipment\n\n");
+            printf("1: Display equipments inventory \n2: Display equipments inventory by sports name \n3: Modify equipment quantity record \n4: Insert record of equipment\n\n");
             printf("Enter your work : ");
             scanf("%d", &admin_choose);
             switch (admin_choose)
@@ -1249,7 +1354,6 @@ int main()
         printf("Enter you want to continue(y/n) : ");
         scanf("%c", &ch);
     } while (ch == 'y');
-    Update_Database(head1, head2);
+    // Update_Database(head1, head2);
     return 0;
 }
-// Update records in file after delete or insert.
