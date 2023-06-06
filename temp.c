@@ -145,6 +145,7 @@ void Student_History(Node2 *head, long int studID)
         curr = curr->next;
     }
 }
+
 int main()
 {
     Node1 *head1 = NULL;

@@ -1121,10 +1121,10 @@ void Update_Database(Node1 *head1, Node2 *head2)
     FILE *fp;
     fp = fopen("Temp_Equipment_Inventory_DataBase.txt", "w");
     int len = countNode_Inventory(head1);
-    fprintf(fp, "%d  \n", len);
+    fprintf(fp, "%d \n", len);
     while (head1 != NULL)
     {
-        fprintf(fp, "%d  %d  %d  \n%s  \n%s  \n", head1->data.available, head1->data.Quantity,
+        fprintf(fp, "%d %d %d \n%s \n%s \n", head1->data.available, head1->data.Quantity,
                 head1->data.issueQuantity, head1->data.Sport, head1->data.equipmentName);
         head1 = head1->next;
     }
@@ -1132,10 +1132,10 @@ void Update_Database(Node1 *head1, Node2 *head2)
 
     fp = fopen("Temp_Sport_Equipment_Management.txt", "w");
     len = countNode_Management(head2);
-    fprintf(fp, "%d  \n", len);
+    fprintf(fp, "%d \n", len);
     while (head2 != NULL)
     {
-        fprintf(fp, "%s  %d  %d  %d  %d  %d  %d  \n%s  \n%s  \n%s  \n", head2->data.equipmentID, head2->data.issueDate, head2->data.dueDate,
+        fprintf(fp, "%s %d %d %d %d %d %d \n%s \n%s \n%s \n", head2->data.equipmentID, head2->data.issueDate, head2->data.dueDate,
                 head2->data.returnDate, head2->data.NoOfDaysDelayed, head2->data.fine, head2->data.studentID, head2->data.equipmentName,
                 head2->data.incharge, head2->data.Sport);
         head2 = head2->next;
