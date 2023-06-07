@@ -80,8 +80,10 @@ bool verify(Admin *root, int userId, char pass[])
         return verify(root->right, userId, pass);
 }
 
-bool Verification()
+int Verification()
 {
+    system("cls");
+    title();
     FILE *fp;
     fp = fopen("./Admin/Admin.txt", "r");
     Admin *root = NULL;
@@ -91,10 +93,29 @@ bool Verification()
 
     int userId;
     char pass[30];
-    printf("Enter your user-id & password : ");
-    scanf("%d %s", &userId, pass);
+    printf("\n\t Log In \n\n");
+    printf(" Fill details\n");
+    printf("\n User ID : ");
+    scanf("%d", &userId);
+    printf("\n Password : ");
+    scanf("%s", pass);
     // call the function to "verify".
-    return verify(root, userId, pass);
+    // return verify(root, userId, pass)
+    int result;
+    if (verify(root, userId, pass) == 1)
+    {
+        printf("\n Logged in Successfully\n");
+        result = 2;
+    }
+    else
+    {
+        printf("\nInvalid User\n");
+        result = 0;
+    }
+    printf("\n\tPress any key to continue ");
+    getchar();
+    getchar();
+    return result;
 }
 // --------------------------------------------------------------------------------------------
 
@@ -102,15 +123,15 @@ typedef struct Equipment_Inventory
 {
     int available, Quantity, issueQuantity;
     char Sport[50];
-    char equipmentName[50];
+    char equipment[50];
 } Equipment_Inventory;
 
 typedef struct Sport_Equipment_Management
 {
-    int issueDate, dueDate, returnDate, NoOfDaysDelayed, fine;
+    int issueDate, dueDate, returnDate, daysDelayed, fine;
     long int studentID;
     char equipmentID[20];
-    char equipmentName[50];
+    char equipment[50];
     char incharge[50];
     char Sport[50];
 } Sport_Equipment_Management;
@@ -180,12 +201,12 @@ void Display_Equipment_Inventory(Node1 *head)
     while (head != NULL)
     {
         char sport[50];
-        char equipment[50];
+        char equip[50];
         strcpy(sport, head->data.Sport);
-        strcpy(equipment, head->data.equipmentName);
+        strcpy(equip, head->data.equipment);
         addSpaces(sport);
-        addSpaces(equipment);
-        printf(" %d\t%s\t%s\t\t%d\t\t%d\t\t%d\n", i, sport, equipment, head->data.Quantity, head->data.available, head->data.issueQuantity);
+        addSpaces(equip);
+        printf(" %d\t%s\t%s\t\t%d\t\t%d\t\t%d\n", i, sport, equip, head->data.Quantity, head->data.available, head->data.issueQuantity);
         head = head->next;
         i++;
     }
@@ -198,8 +219,8 @@ void Display_Sport_Equipment_Management(Node2 *head)
     system("cls");
     printf("\n\t\t\t\t\t\t\t=======Sport Equipment Management Record=======\n");
     int i = 1;
-    printf("\nSNo\tIncharge\tStudent ID\tSport\t\tEquipment Name\tEquipment ID\tIssue date\tDue date\tReturn date\tNo of days delayed\tFine\n");
-    printf("--------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    printf("\nSNo\tIncharge\tStudent ID\tSport\t\tEquipment Name\tEquipment ID\tIssue date\tDue date\tReturn date\tDays delayed\tFine\n");
+    printf("------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
     while (head != NULL)
     {
         // Calculate Date.
@@ -214,17 +235,17 @@ void Display_Sport_Equipment_Management(Node2 *head)
         int Ryear = head->data.returnDate % 10000;
 
         char sport[50];
-        char equipment[50];
+        char equip[50];
         char Incharge[50];
         strcpy(Incharge, head->data.incharge);
         strcpy(sport, head->data.Sport);
-        strcpy(equipment, head->data.equipmentName);
+        strcpy(equip, head->data.equipment);
         addSpaces(Incharge);
         addSpaces(sport);
-        addSpaces(equipment);
-        printf(" %d\t%s\t%ld\t\t%s\t%s\t%s\t\t%d-%d-%d\t%d-%d-%d\t%d-%d-%d\t\t%d\t\t%d\n", i, Incharge,
-               head->data.studentID, sport, equipment, head->data.equipmentID, Iday, Imonth, Iyear,
-               Dday, Dmonth, Dyear, Rday, Rmonth, Ryear, head->data.NoOfDaysDelayed, head->data.fine);
+        addSpaces(equip);
+        printf(" %d\t%s\t%ld\t\t%s\t%s\t%s\t\t%d-%d-%d\t%d-%d-%d\t%d-%d-%d\t\t%d\t%d\n", i, Incharge,
+               head->data.studentID, sport, equip, head->data.equipmentID, Iday, Imonth, Iyear,
+               Dday, Dmonth, Dyear, Rday, Rmonth, Ryear, head->data.daysDelayed, head->data.fine);
         head = head->next;
         i++;
     }
@@ -282,24 +303,28 @@ void bubbleSort(Node2 *head2)
     }
 }
 
-void Student_History(Node2 *head, long int studID)
+void Student_History(Node2 *head)
 {
     bubbleSort(head);
     system("cls");
     printf("\n\t\t\t\t\t\t\t\t=======Student History Record=======\n");
+    getchar();
+    long int studId;
     int flag = 0;
+    printf(" Enter your studentId : ");
+    scanf("%ld", &studId);
 
+    printf("\n Issued equipment");
     int i = 1;
     Node2 *curr = head;
     while (curr != NULL)
     {
-        if (curr->data.studentID == studID && curr->data.returnDate == 0)
+        if (curr->data.studentID == studId && curr->data.returnDate == 0)
         {
             if (flag == 0)
             {
-                printf("\n Issued equipment");
-                printf("\nSNo\tIncharge\tStudent ID\tSport\t\tEquipment Name\tEquipment ID\tIssue date\tDue date\tReturn date\tNo of days delayed\tFine\n");
-                printf("--------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+                printf("\nSNo\tIncharge\tStudent ID\tSport\t\tEquipment Name\tEquipment ID\tIssue date\tDue date\tReturn date\tDays delayed\tFine\n");
+                printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
             }
             // Calculate Date.
             int Iday = curr->data.issueDate / pow(10, 6);
@@ -313,17 +338,17 @@ void Student_History(Node2 *head, long int studID)
             int Ryear = curr->data.returnDate % 10000;
 
             char sport[50];
-            char equipment[50];
+            char equip[50];
             char Incharge[50];
             strcpy(Incharge, curr->data.incharge);
             strcpy(sport, curr->data.Sport);
-            strcpy(equipment, curr->data.equipmentName);
+            strcpy(equip, curr->data.equipment);
             addSpaces(Incharge);
             addSpaces(sport);
-            addSpaces(equipment);
+            addSpaces(equip);
             printf(" %d\t%s\t%ld\t\t%s\t%s\t%s\t\t%d-%d-%d\t%d-%d-%d\t%d-%d-%d\t\t%d\t\t%d\n", i, Incharge,
-                   curr->data.studentID, sport, equipment, curr->data.equipmentID, Iday, Imonth, Iyear,
-                   Dday, Dmonth, Dyear, Rday, Rmonth, Ryear, curr->data.NoOfDaysDelayed, curr->data.fine);
+                   curr->data.studentID, sport, equip, curr->data.equipmentID, Iday, Imonth, Iyear,
+                   Dday, Dmonth, Dyear, Rday, Rmonth, Ryear, curr->data.daysDelayed, curr->data.fine);
             i++;
             flag++;
         }
@@ -331,21 +356,21 @@ void Student_History(Node2 *head, long int studID)
     }
     if (flag == 0)
     {
-        printf("\n No Equipment to Return\n");
+        printf("\n\n No Equipment to Return\n");
     }
 
+    printf("\n Returned equipment");
     flag = 0;
-    i = 0;
+    i = 1;
     curr = head;
     while (curr != NULL)
     {
-        if (curr->data.studentID == studID && curr->data.returnDate != 0)
+        if (curr->data.studentID == studId && curr->data.returnDate != 0)
         {
             if (flag == 0)
             {
-                printf("\n Returned equipment");
-                printf("\nSNo\tIncharge\tStudent ID\tSport\t\tEquipment Name\tEquipment ID\tIssue date\tDue date\tReturn date\tNo of days delayed\tFine\n");
-                printf("--------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+                printf("\nSNo\tIncharge\tStudent ID\tSport\t\tEquipment Name\tEquipment ID\tIssue date\tDue date\tReturn date\tDays delayed\tFine\n");
+                printf("------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
             }
             // Calculate Date.
             int Iday = curr->data.issueDate / pow(10, 6);
@@ -359,17 +384,17 @@ void Student_History(Node2 *head, long int studID)
             int Ryear = curr->data.returnDate % 10000;
 
             char sport[50];
-            char equipment[50];
+            char equip[50];
             char Incharge[50];
             strcpy(Incharge, curr->data.incharge);
             strcpy(sport, curr->data.Sport);
-            strcpy(equipment, curr->data.equipmentName);
+            strcpy(equip, curr->data.equipment);
             addSpaces(Incharge);
             addSpaces(sport);
-            addSpaces(equipment);
-            printf(" %d\t%s\t%ld\t\t%s\t%s\t%s\t\t%d-%d-%d\t%d-%d-%d\t%d-%d-%d\t\t%d\t\t%d\n", i, Incharge,
-                   curr->data.studentID, sport, equipment, curr->data.equipmentID, Iday, Imonth, Iyear,
-                   Dday, Dmonth, Dyear, Rday, Rmonth, Ryear, curr->data.NoOfDaysDelayed, curr->data.fine);
+            addSpaces(equip);
+            printf(" %d\t%s\t%ld\t\t%s\t%s\t%s\t\t%d-%d-%d\t%d-%d-%d\t%d-%d-%d\t\t%d\t%d\n", i, Incharge,
+                   curr->data.studentID, sport, equip, curr->data.equipmentID, Iday, Imonth, Iyear,
+                   Dday, Dmonth, Dyear, Rday, Rmonth, Ryear, curr->data.daysDelayed, curr->data.fine);
             i++;
             flag++;
         }
@@ -377,9 +402,10 @@ void Student_History(Node2 *head, long int studID)
     }
     if (flag == 0)
     {
-        printf("\n No Equipment Issued Yet");
+        printf("\n\n No records found");
     }
     printf("\n \t Press any key to exit");
+    getchar();
     getchar();
 }
 
@@ -484,7 +510,7 @@ bool check_Quantity(Node1 *head1, char sport[], char equip[])
 {
     while (head1 != NULL)
     {
-        if (strcmp(head1->data.Sport, sport) == 0 && strcmp(head1->data.equipmentName, equip) == 0)
+        if (strcmp(head1->data.Sport, sport) == 0 && strcmp(head1->data.equipment, equip) == 0)
         {
             if (head1->data.available != 0)
             {
@@ -500,35 +526,37 @@ bool check_Quantity(Node1 *head1, char sport[], char equip[])
     return 0;
 }
 
-void equipment_issue(Node1 *head1, Node2 *head2, char sport[], char equip[])
+void equipment_issue(Node1 *head1, Node2 **head2, char sport[], char equip[])
 {
     if (check_Quantity(head1, sport, equip) == 0)
     {
-        int nearestAvailableDate = nearest_Availibility_Date(head2);
+        int nearestAvailableDate = nearest_Availibility_Date(*head2);
         if (nearestAvailableDate != 0)
         {
             printf(" Desired equipment is not available now!");
-            printf("\n Equipment will be available by : %d-%d-%d\n", nearestAvailableDate / 1000000, (nearestAvailableDate % 1000000) / 10000, nearestAvailableDate % 10000);
+            printf("\n Equipment will be available by : %d-%d-%d\n", nearestAvailableDate / 1000000,
+                   (nearestAvailableDate % 1000000) / 10000, nearestAvailableDate % 10000);
         }
         else
         {
-            printf(" Desired equipment is not available for Issue");
+            printf("\n Desired equipment is not available for Issue\n");
         }
     }
     else
     {
         Sport_Equipment_Management equipManage;
         strcpy(equipManage.Sport, sport);
-        strcpy(equipManage.equipmentName, equip);
+        strcpy(equipManage.equipment, equip);
 
-        printf(" Fill details\n");
-        getchar();
-        printf(" Incharge : ");
+        printf("\n Fill details\n");
+        printf("\n Incharge : ");
         scanf("%[^\n]", equipManage.incharge);
-        printf(" Student ID : ");
+        printf("\n Student ID : ");
         scanf("%ld", &equipManage.studentID);
-        printf(" Equipment ID : ");
-        scanf("%s", &equipManage.equipmentID);
+        printf("\n Equipment ID : ");
+        scanf("%s", equipManage.equipmentID);
+        equipManage.daysDelayed = 0;
+        equipManage.fine = 0;
 
         // date
         time_t t = time(NULL);
@@ -538,545 +566,303 @@ void equipment_issue(Node1 *head1, Node2 *head2, char sport[], char equip[])
         equipManage.dueDate = updateDate(equipManage.issueDate);
 
         // insert record.
-        Insert_Sport_Equipment_Management(&head2, equipManage);
-        // update available equipments & issueQuantity.
-        while (head1)
-        {
-            if (strcmp(head1->data.Sport, sport) == 0 && strcmp(head1->data.equipmentName, equip) == 0)
-            {
-                head1->data.available--;
-                head1->data.issueQuantity++;
-                break;
-            }
-            head1 = head1->next;
-        }
+        Insert_Sport_Equipment_Management(head2, equipManage);
 
         // display
-        printf("The due date for the item : %d-%d-%d\n", equipManage.dueDate / 1000000, (equipManage.dueDate % 1000000) / 10000, equipManage.dueDate % 10000);
-        printf("Issued Successfully\n");
+        printf("\n Your due date is 15 days from now : %d-%d-%d\n", equipManage.dueDate / 1000000, (equipManage.dueDate % 1000000) / 10000, equipManage.dueDate % 10000);
+        printf("\n Issued Successfully\n");
     }
 }
 
-void user_issue(Node1 *head1, Node2 *head2)
+void user_issue(Node1 *head1, Node2 **head2)
 {
     system("cls");
     printf("\t\t=======Issue Sports Equipment=======\n");
-    int choice;
-    char equip_No;
+    int choice, equip_No;
     char sport[50];
     char equip[50];
-    printf(" 1) table tennis  \n 2) cricket \n 3) badminton \n 4) basketball \n 5) football \n 6) lawn tennis \n 7) chess \n 8) carrom \n 9) hockey \n 10) volleyball \n");
+
+    // Display Sports
+    Node1 *curr = head1;
+    printf("\nSNo\tSport\n");
+    printf("------------------\n");
+    int i = 1;
+    printf(" %d\t%s\n", i, curr->data.Sport);
+    curr = curr->next;
+    // strcpy(sport, curr->data.Sport);
+    i++;
+    while (curr != NULL)
+    {
+        int flag = 0;
+        Node1 *temp = head1;
+        while (temp != curr)
+        {
+            if (strcmp(curr->data.Sport, temp->data.Sport) == 0)
+            {
+                flag++;
+                break;
+            }
+            temp = temp->next;
+        }
+        if (flag == 0)
+        {
+            printf(" %d\t%s\n", i, curr->data.Sport);
+            i++;
+        }
+        curr = curr->next;
+    }
     printf("Enter your desired sport : ");
     scanf("%d", &choice);
     getchar();
-    switch (choice)
+
+    // Store Sports Name.
+    curr = head1;
+    i = 0;
+    while (curr != NULL)
     {
-    case 1:
-        strcpy(sport, "table tennis");
-        printf(" a) racquet\n b) ball\n c) net\n");
-        printf("Choose the equipment : ");
-        scanf("%c", &equip_No);
-        switch (equip_No)
+        int flag = 0;
+        Node1 *temp = head1;
+        while (temp != curr)
         {
-        case 'a':
-            strcpy(equip, "racquet");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        case 'b':
-            strcpy(equip, "ball");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        case 'c':
-            strcpy(equip, "net");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        default:
-            printf("\nInvalid Input!!");
-            break;
+            if (strcmp(curr->data.Sport, temp->data.Sport) == 0)
+            {
+                flag++;
+                break;
+            }
+            temp = temp->next;
         }
-        break;
-    case 2:
-        strcpy(sport, "cricket");
-        printf(" a) bat\n b) leather ball\n c) tennis ball\n d) kit \n e) stumps\n");
-        printf("Choose the equipment : ");
-        scanf("%c", &equip_No);
-        switch (equip_No)
+        if (flag == 0)
         {
-        case 'a':
-            strcpy(equip, "bat");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        case 'b':
-            strcpy(equip, "leather ball");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        case 'c':
-            strcpy(equip, "tennis ball");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        case 'd':
-            strcpy(equip, "kit");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        case 'e':
-            strcpy(equip, "stumps");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        default:
-            printf("\nInvalid Input!!");
-            break;
+            i++;
+            // printf("\n%d#%s#", i, curr->data.Sport);
+            if (i == choice)
+            {
+                break;
+            }
         }
-        break;
-    case 3:
-        strcpy(sport, "badminton");
-        printf(" a) racquet\n b) shuttelcock\n");
-        printf("Choose the equipment : ");
-        scanf("%c", &equip_No);
-
-        switch (equip_No)
-        {
-        case 'a':
-            strcpy(equip, "racquet");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        case 'b':
-            strcpy(equip, "shuttelcock");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        default:
-            printf("\nInvalid Input!!");
-            break;
-        }
-
-        break;
-    case 4:
-        strcpy(sport, "basketball");
-        printf(" a) basketball\n");
-        printf("Choose the equipment : ");
-        scanf("%c", &equip_No);
-
-        switch (equip_No)
-        {
-        case 'a':
-            strcpy(equip, "basketball");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        default:
-            printf("\nInvalid Input!!");
-            break;
-        }
-
-        break;
-    case 5:
-        strcpy(sport, "football");
-        printf(" a) football\n b) gloves\n c) kit\n");
-        printf("Choose the equipment : ");
-        scanf("%c", &equip_No);
-
-        switch (equip_No)
-        {
-        case 'a':
-            strcpy(equip, "football");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        case 'b':
-            strcpy(equip, "gloves");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        case 'c':
-            strcpy(equip, "kit");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        default:
-            printf("\nInvalid Input!!");
-            break;
-        }
-
-        break;
-    case 6:
-        strcpy(sport, "lawn tennis");
-        printf(" a) racquet\n b) ball\n");
-        printf("Choose the equipment : ");
-        scanf("%c", &equip_No);
-
-        switch (equip_No)
-        {
-        case 'a':
-            strcpy(equip, "racquet");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        case 'b':
-            strcpy(equip, "ball");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        default:
-            printf("\nInvalid Input!!");
-            break;
-        }
-
-        break;
-    case 7:
-        strcpy(sport, "chess");
-        printf(" a) chess set\n");
-        printf("Choose the equipment : ");
-        scanf("%c", &equip_No);
-
-        switch (equip_No)
-        {
-        case 'a':
-            strcpy(equip, "chess set");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        default:
-            printf("\nInvalid Input!!");
-            break;
-        }
-
-        break;
-    case 8:
-        strcpy(sport, "carrom");
-        printf(" a) board\n b) carrom coins\n c) powder\n");
-        printf("Choose the equipment : ");
-        scanf("%c", &equip_No);
-
-        switch (equip_No)
-        {
-        case 'a':
-            strcpy(equip, "board");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        case 'b':
-            strcpy(equip, "carrom coins");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        case 'c':
-            strcpy(equip, "powder");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        default:
-            printf("\nInvalid Input!!");
-            break;
-        }
-
-        break;
-    case 9:
-        strcpy(sport, "hockey");
-        printf(" a) hockey stick\n b) hockey ball\n c) kit\n");
-        printf("Choose the equipment : ");
-        scanf("%c", &equip_No);
-
-        switch (equip_No)
-        {
-        case 'a':
-            strcpy(sport, "hockey stick");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        case 'b':
-            strcpy(equip, "hockey ball");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        case 'c':
-            strcpy(equip, "kit");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        default:
-            printf("\nInvalid Input!!");
-            break;
-        }
-
-        break;
-    case 10:
-        strcpy(sport, "volleyball");
-        printf(" a) volleyball\n");
-        printf("Choose the equipment : \n");
-        scanf("%c", &equip_No);
-
-        switch (equip_No)
-        {
-        case 'a':
-            strcpy(equip, "volleyball");
-            equipment_issue(head1, head2, sport, equip);
-            break;
-        default:
-            printf("\nInvalid Input!!");
-            break;
-        }
-        break;
-    default:
-        printf("\nInvalid Input!!");
-        break;
+        curr = curr->next;
     }
+    if (curr != NULL)
+    {
+        strcpy(sport, curr->data.Sport);
+        printf("\n%s", sport);
+    }
+    else
+    {
+        printf("\n Invalid Input!!\n");
+        printf("\n \t Press any key to exit");
+        getchar();
+        return;
+    }
+
+    // Display Equipments.
+    curr = head1;
+    printf("\n\nSNo\tEquipment\n");
+    printf("------------------\n");
+    i = 1;
+    while (curr != NULL)
+    {
+        if (strcmp(sport, curr->data.Sport) == 0)
+        {
+            printf(" %d\t%s\n", i, curr->data.equipment);
+            i++;
+        }
+        // printf("\n%d#%s#\n", i, curr->data.Sport);
+        curr = curr->next;
+    }
+    printf("\nChoose the equipment : ");
+    scanf("%d", &choice);
+    getchar();
+
+    //
+    // Store Equipment Name.
+    curr = head1;
+    i = 0;
+    while (curr != NULL)
+    {
+        if (strcmp(sport, curr->data.Sport) == 0)
+        {
+            // printf(" %d\t%s\n", i, curr->data.equipment);
+            i++;
+            if (i == choice)
+            {
+                break;
+            }
+        }
+        // printf("\n%d#%s#\n", i, curr->data.Sport);
+        curr = curr->next;
+    }
+    if (curr != NULL)
+    {
+        strcpy(equip, curr->data.equipment);
+        printf("\n#%s#", equip);
+    }
+    else
+    {
+        printf("\n Invalid Input!!\n");
+        printf("\n \t Press any key to exit");
+        getchar();
+        return;
+    }
+    // call the "equipment_issue" function.
+    equipment_issue(head1, head2, sport, equip);
+
     printf("\n \t Press any key to exit");
     getchar();
-    // fgets(sport, 50, stdin);
+    getchar();
 }
 
 void user_display_Quantity(Node1 *head1, char sport[], char equip[])
 {
     while (head1 != NULL)
     {
-        if (strcmp(head1->data.Sport, sport) == 0 && strcmp(head1->data.equipmentName, equip) == 0)
+        if (strcmp(head1->data.Sport, sport) == 0 && strcmp(head1->data.equipment, equip) == 0)
         {
             if (head1->data.available != 0)
             {
                 printf("\n Equipment is available\n");
+                return;
             }
-            else
-            {
-                printf("\n Equipment is not available\n");
-            }
-            return;
+            break;
         }
         head1 = head1->next;
     }
+    printf("\n Equipment is not available\n");
 }
 
 void User_Check_Availability(Node1 *head1, Node2 *head2)
 {
     system("cls");
     printf("\t\t=======Check Availibality of Sport Equipment=======\n");
-    int choice;
-    char equip_No;
+    int choice, equip_No;
     char sport[50];
     char equip[50];
-    printf(" 1) table tennis  \n 2) cricket \n 3) badminton \n 4) basketball \n 5) football \n 6) lawn tennis \n 7) chess \n 8) carrom \n 9) hockey \n 10) volleyball \n");
+
+    // Display Sports
+    Node1 *curr = head1;
+    printf("\nSNo\tSport\n");
+    printf("------------------\n");
+    int i = 1;
+    printf(" %d\t%s\n", i, curr->data.Sport);
+    curr = curr->next;
+    // strcpy(sport, curr->data.Sport);
+    i++;
+    while (curr != NULL)
+    {
+        int flag = 0;
+        Node1 *temp = head1;
+        while (temp != curr)
+        {
+            if (strcmp(curr->data.Sport, temp->data.Sport) == 0)
+            {
+                flag++;
+                break;
+            }
+            temp = temp->next;
+        }
+        if (flag == 0)
+        {
+            printf(" %d\t%s\n", i, curr->data.Sport);
+            i++;
+        }
+        curr = curr->next;
+    }
     printf("Enter your desired sport : ");
     scanf("%d", &choice);
     getchar();
-    switch (choice)
+
+    // Store Sports Name.
+    curr = head1;
+    i = 0;
+    while (curr != NULL)
     {
-    case 1:
-        strcpy(sport, "table tennis");
-        printf(" a) racquet\n b) ball\n c) net\n");
-        printf("Choose the equipment : ");
-        scanf("%c", &equip_No);
-        switch (equip_No)
+        int flag = 0;
+        Node1 *temp = head1;
+        while (temp != curr)
         {
-        case 'a':
-            strcpy(equip, "racquet");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        case 'b':
-            strcpy(equip, "ball");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        case 'c':
-            strcpy(equip, "net");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        default:
-            printf("\nInvalid Input!!");
-            break;
+            if (strcmp(curr->data.Sport, temp->data.Sport) == 0)
+            {
+                flag++;
+                break;
+            }
+            temp = temp->next;
         }
-        break;
-    case 2:
-        strcpy(sport, "cricket");
-        printf(" a) bat\n b) leather ball\n c) tennis ball\n d) kit\n e) stumps\n");
-        printf("Choose the equipment : ");
-        scanf("%c", &equip_No);
-        switch (equip_No)
+        if (flag == 0)
         {
-        case 'a':
-            strcpy(equip, "bat");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        case 'b':
-            strcpy(equip, "leather ball");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        case 'c':
-            strcpy(equip, "tennis ball");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        case 'd':
-            strcpy(equip, "kit");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        case 'e':
-            strcpy(equip, "stumps");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        default:
-            printf("\nInvalid Input!!");
-            break;
+            i++;
+            // printf("\n%d#%s#", i, curr->data.Sport);
+            if (i == choice)
+            {
+                break;
+            }
         }
-        break;
-    case 3:
-        strcpy(sport, "badminton");
-        printf(" a) racquet\n b) shuttelcock\n");
-        printf("Choose the equipment : ");
-        scanf("%c", &equip_No);
-
-        switch (equip_No)
-        {
-        case 'a':
-            strcpy(equip, "racquet");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        case 'b':
-            strcpy(equip, "shuttelcock");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        default:
-            printf("\nInvalid Input!!");
-            break;
-        }
-
-        break;
-    case 4:
-        strcpy(sport, "basketball");
-        printf(" a) basketball\n");
-        printf("Choose the equipment : ");
-        scanf("%c", &equip_No);
-
-        switch (equip_No)
-        {
-        case 'a':
-            strcpy(equip, "basketball");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        default:
-            printf("\nInvalid Input!!");
-            break;
-        }
-
-        break;
-    case 5:
-        strcpy(sport, "football");
-        printf(" a) football\n b) gloves\n c) kit\n");
-        printf("Choose the equipment : ");
-        scanf("%c", &equip_No);
-
-        switch (equip_No)
-        {
-        case 'a':
-            strcpy(equip, "football");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        case 'b':
-            strcpy(equip, "gloves");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        case 'c':
-            strcpy(equip, "kit");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        default:
-            printf("\nInvalid Input!!");
-            break;
-        }
-
-        break;
-    case 6:
-        strcpy(sport, "lawn tennis");
-        printf(" a) racquet\n b) ball\n");
-        printf("Choose the equipment : ");
-        scanf("%c", &equip_No);
-
-        switch (equip_No)
-        {
-        case 'a':
-            strcpy(equip, "racquet");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        case 'b':
-            strcpy(equip, "ball");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        default:
-            printf("\nInvalid Input!!");
-            break;
-        }
-
-        break;
-    case 7:
-        strcpy(sport, "chess");
-        printf(" a) chess set\n");
-        printf("Choose the equipment : ");
-        scanf("%c", &equip_No);
-
-        switch (equip_No)
-        {
-        case 'a':
-            strcpy(equip, "chess set");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        default:
-            printf("\nInvalid Input!!");
-            break;
-        }
-
-        break;
-    case 8:
-        strcpy(sport, "carrom");
-        printf(" a) board\n b) carrom coins\n c) powder\n");
-        printf("Choose the equipment : ");
-        scanf("%c", &equip_No);
-
-        switch (equip_No)
-        {
-        case 'a':
-            strcpy(equip, "board");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        case 'b':
-            strcpy(equip, "carrom coins");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        case 'c':
-            strcpy(equip, "powder");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        default:
-            printf("\nInvalid Input!!");
-            break;
-        }
-
-        break;
-    case 9:
-        strcpy(sport, "hockey");
-        printf(" a) hockey stick\n b) hockey ball\n c) kit\n");
-        printf("Choose the equipment : ");
-        scanf("%c", &equip_No);
-
-        switch (equip_No)
-        {
-        case 'a':
-            strcpy(equip, "hockey stick");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        case 'b':
-            strcpy(equip, "hockey ball");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        case 'c':
-            strcpy(equip, "kit");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        default:
-            printf("\nInvalid Input!!");
-            break;
-        }
-
-        break;
-    case 10:
-        strcpy(sport, "volleyball");
-        printf(" a) volleyball\n");
-        printf("Choose the equipment : ");
-        scanf("%c", &equip_No);
-
-        switch (equip_No)
-        {
-        case 'a':
-            strcpy(equip, "volleyball");
-            user_display_Quantity(head1, sport, equip);
-            break;
-        }
-        break;
-    default:
-        printf("\nInvalid Input!!");
-        break;
+        curr = curr->next;
     }
+    if (curr != NULL)
+    {
+        strcpy(sport, curr->data.Sport);
+        printf("\n%s", sport);
+    }
+    else
+    {
+        printf("\n Invalid Input!!\n");
+        printf("\n \t Press any key to exit");
+        getchar();
+        return;
+    }
+
+    // Display Equipments.
+    curr = head1;
+    printf("\n\nSNo\tEquipment\n");
+    printf("------------------\n");
+    i = 1;
+    while (curr != NULL)
+    {
+        if (strcmp(sport, curr->data.Sport) == 0)
+        {
+            printf(" %d\t%s\n", i, curr->data.equipment);
+            i++;
+        }
+        // printf("\n%d#%s#\n", i, curr->data.Sport);
+        curr = curr->next;
+    }
+    printf("\nChoose the equipment : ");
+    scanf("%d", &choice);
+    getchar();
+
+    //
+    // Store Equipment Name.
+    curr = head1;
+    i = 0;
+    while (curr != NULL)
+    {
+        if (strcmp(sport, curr->data.Sport) == 0)
+        {
+            // printf(" %d\t%s\n", i, curr->data.equipment);
+            i++;
+            if (i == choice)
+            {
+                break;
+            }
+        }
+        // printf("\n%d#%s#\n", i, curr->data.Sport);
+        curr = curr->next;
+    }
+    if (curr != NULL)
+    {
+        strcpy(equip, curr->data.equipment);
+        printf("\n#%s#", equip);
+    }
+    else
+    {
+        printf("\n Invalid Input!!\n");
+        printf("\n \t Press any key to exit");
+        getchar();
+        return;
+    }
+    // call the "user_display_Quantity" function.
+    user_display_Quantity(head1, sport, equip);
+
     printf("\n \t Press any key to exit");
     getchar();
 }
@@ -1087,8 +873,12 @@ void user_return(Node1 *head1, Node2 *head2)
     printf("\t\t=======Return Sports Equipment=======\n");
     long int studId;
     char equipId[20];
-    printf("Enter your StudentID & EquipmentID : ");
-    scanf("%ld %s", &studId, equipId);
+    printf("\n Fill Details\n");
+    printf("\n StudentID : ");
+    scanf("%ld", &studId);
+    printf("\n EquipmentID : ");
+    scanf("%s", equipId);
+    getchar();
     while (head2 != NULL)
     {
         if (head2->data.studentID == studId && strcmp(head2->data.equipmentID, equipId) == 0)
@@ -1096,7 +886,7 @@ void user_return(Node1 *head1, Node2 *head2)
             // update available equipments & issueQuantity.
             while (head1)
             {
-                if (head1->data.Sport == head2->data.Sport && head1->data.equipmentName == head2->data.equipmentName)
+                if (strcmp(head1->data.Sport, head2->data.Sport) == 0 && strcmp(head1->data.equipment, head2->data.equipment) == 0)
                 {
                     head1->data.available++;
                     head1->data.issueQuantity--;
@@ -1109,21 +899,21 @@ void user_return(Node1 *head1, Node2 *head2)
             head2->data.returnDate = (tm.tm_mday) * 1000000 + (tm.tm_mon + 1) * 10000 + tm.tm_year + 1900;
 
             // call program to find number of days delay in return.
-            head2->data.NoOfDaysDelayed = calculateDays(head2->data.dueDate, head2->data.returnDate);
-            head2->data.fine = (head2->data.NoOfDaysDelayed) * 10;
+            head2->data.daysDelayed = calculateDays(head2->data.dueDate, head2->data.returnDate);
+            head2->data.fine = (head2->data.daysDelayed) * 10;
             // printf fine.
             if (head2->data.fine != 0)
             {
                 printf("\nFine = %d Rs\n", head2->data.fine);
             }
-            printf("\nSports equipment successfully\n");
-            printf(" \t Press any key to exit");
+            printf("\n Returned successfully\n");
+            printf("\n \t Press any key to exit");
             getchar();
             return;
         }
         head2 = head2->next;
     }
-    printf("\nYou havn't issue any sports equipment\n");
+    printf("\n You havn't issue any sports equipment\n");
     printf("\n \t Press any key to exit");
     getchar();
 }
@@ -1144,16 +934,16 @@ void DISPLAY_Equipment_Inventory_By_Sport(Node1 *head1)
         {
             if (flag == 0)
             {
-                printf("SNo\tSport \t\tEquipment Name\t\tQuantity \tAvailable \tIssueQuantity\n");
+                printf("\nSNo\tSport \t\tEquipment Name\t\tQuantity \tAvailable \tIssueQuantity\n");
                 printf("---------------------------------------------------------------------------------------------\n");
             }
             char sport[50];
-            char equipment[50];
+            char equip[50];
             strcpy(sport, head1->data.Sport);
-            strcpy(equipment, head1->data.equipmentName);
+            strcpy(equip, head1->data.equipment);
             addSpaces(sport);
-            addSpaces(equipment);
-            printf(" %d\t%s\t%s\t\t%d\t\t%d\t\t%d\n", i, sport, equipment, head1->data.Quantity,
+            addSpaces(equip);
+            printf(" %d\t%s\t%s\t\t%d\t\t%d\t\t%d\n", i, sport, equip, head1->data.Quantity,
                    head1->data.available, head1->data.issueQuantity);
             flag++;
             i++;
@@ -1166,22 +956,167 @@ void DISPLAY_Equipment_Inventory_By_Sport(Node1 *head1)
     }
     printf("\n \t Press any key to exit");
     getchar();
+    getchar();
 }
 
 void Modify_Equipment_Inventory_Quantity(Node1 *head1)
 {
-    int Sno, cnt = 1;
-    printf("\nEnter the serial number of record : ");
-    scanf("%d", &Sno);
+    // Modify sports equipment quantity
+    system("cls");
+    printf("\t\t=======Modify Sport Equipment Quantity=======\n");
+    int choice, equip_No;
+    char sport[50];
+    char equip[50];
+
+    // Display Sports
     Node1 *curr = head1;
-    int quantity;
-    while (curr)
+    printf("\nSNo\tSport\n");
+    printf("------------------\n");
+    int i = 1;
+    printf(" %d\t%s\n", i, curr->data.Sport);
+    curr = curr->next;
+    // strcpy(sport, curr->data.Sport);
+    i++;
+    while (curr != NULL)
     {
-        if (cnt == Sno)
+        int flag = 0;
+        Node1 *temp = head1;
+        while (temp != curr)
         {
+            if (strcmp(curr->data.Sport, temp->data.Sport) == 0)
+            {
+                flag++;
+                break;
+            }
+            temp = temp->next;
+        }
+        if (flag == 0)
+        {
+            printf(" %d\t%s\n", i, curr->data.Sport);
+            i++;
+        }
+        curr = curr->next;
+    }
+    printf("Enter your desired sport : ");
+    scanf("%d", &choice);
+    getchar();
+
+    // Store Sports Name.
+    curr = head1;
+    i = 0;
+    while (curr != NULL)
+    {
+        int flag = 0;
+        Node1 *temp = head1;
+        while (temp != curr)
+        {
+            if (strcmp(curr->data.Sport, temp->data.Sport) == 0)
+            {
+                flag++;
+                break;
+            }
+            temp = temp->next;
+        }
+        if (flag == 0)
+        {
+            i++;
+            // printf("\n%d#%s#", i, curr->data.Sport);
+            if (i == choice)
+            {
+                break;
+            }
+        }
+        curr = curr->next;
+    }
+    if (curr != NULL)
+    {
+        strcpy(sport, curr->data.Sport);
+        printf("\n%s", sport);
+    }
+    else
+    {
+        printf("\n Invalid Input!!\n");
+        printf("\n \t Press any key to exit");
+        getchar();
+        return;
+    }
+
+    // Display Equipments.
+    curr = head1;
+    printf("\n\nSNo\tEquipment\n");
+    printf("------------------\n");
+    i = 1;
+    while (curr != NULL)
+    {
+        if (strcmp(sport, curr->data.Sport) == 0)
+        {
+            printf(" %d\t%s\n", i, curr->data.equipment);
+            i++;
+        }
+        // printf("\n%d#%s#\n", i, curr->data.Sport);
+        curr = curr->next;
+    }
+    printf("\nChoose the equipment : ");
+    scanf("%d", &choice);
+    getchar();
+
+    //
+    // Store Equipment Name.
+    curr = head1;
+    i = 0;
+    while (curr != NULL)
+    {
+        if (strcmp(sport, curr->data.Sport) == 0)
+        {
+            // printf(" %d\t%s\n", i, curr->data.equipment);
+            i++;
+            if (i == choice)
+            {
+                break;
+            }
+        }
+        // printf("\n%d#%s#\n", i, curr->data.Sport);
+        curr = curr->next;
+    }
+    if (curr != NULL)
+    {
+        strcpy(equip, curr->data.equipment);
+        printf("\n#%s#", equip);
+    }
+    else
+    {
+        printf("\n Invalid Input!!\n");
+        printf("\n \t Press any key to exit");
+        getchar();
+        return;
+    }
+
+    curr = head1;
+    int quantity;
+    while (curr != NULL)
+    {
+        if (strcmp(curr->data.Sport, sport) == 0 && strcmp(curr->data.equipment, equip) == 0)
+        {
+            printf("\n Initial Quantity : %d", curr->data.Quantity);
             getchar();
             printf("\n Enter quantity: ");
             scanf("%d", &quantity);
+            if (quantity >= curr->data.Quantity)
+            {
+                curr->data.available = curr->data.Quantity - curr->data.issueQuantity;
+            }
+            else
+            {
+                if (curr->data.issueQuantity >= quantity)
+                {
+                    curr->data.issueQuantity = quantity;
+                    curr->data.available = 0;
+                }
+                else
+                {
+                    curr->data.available = quantity - curr->data.issueQuantity;
+                }
+            }
             curr->data.Quantity = quantity;
             printf("\n Record modified successfully\n");
             break;
@@ -1201,7 +1136,7 @@ void Import_Database(Node1 **head1, Node2 **head2)
     while (n--)
     {
         fscanf(fp, "%d %d %d %[^\n] %[^\n]", &equipInvent.available, &equipInvent.Quantity, &equipInvent.issueQuantity,
-               equipInvent.Sport, equipInvent.equipmentName);
+               equipInvent.Sport, equipInvent.equipment);
         Insert_Equipment_Inventory(head1, equipInvent);
     }
     fclose(fp);
@@ -1212,13 +1147,11 @@ void Import_Database(Node1 **head1, Node2 **head2)
     while (n--)
     {
         fscanf(fp, "%s %d %d %d %d %d %ld %[^\n] %[^\n] %[^\n]", equipManage.equipmentID, &equipManage.issueDate,
-               &equipManage.dueDate, &equipManage.returnDate, &equipManage.NoOfDaysDelayed, &equipManage.fine,
-               &equipManage.studentID, equipManage.equipmentName, equipManage.incharge, equipManage.Sport);
+               &equipManage.dueDate, &equipManage.returnDate, &equipManage.daysDelayed, &equipManage.fine,
+               &equipManage.studentID, equipManage.equipment, equipManage.incharge, equipManage.Sport);
         Insert_Sport_Equipment_Management(head2, equipManage);
     }
     fclose(fp);
-    Display_Equipment_Inventory(*head1);
-    Display_Sport_Equipment_Management(*head2);
 }
 
 void Update_Database(Node1 *head1, Node2 *head2)
@@ -1229,8 +1162,8 @@ void Update_Database(Node1 *head1, Node2 *head2)
     fprintf(fp, "%d  \n", len);
     while (head1 != NULL)
     {
-        fprintf(fp, "%d  %d  %d  \n%s  \n%s  \n", head1->data.available, head1->data.Quantity,
-                head1->data.issueQuantity, head1->data.Sport, head1->data.equipmentName);
+        fprintf(fp, "%d %d %d\n%s\n%s\n", head1->data.available, head1->data.Quantity,
+                head1->data.issueQuantity, head1->data.Sport, head1->data.equipment);
         head1 = head1->next;
     }
     fclose(fp);
@@ -1240,8 +1173,8 @@ void Update_Database(Node1 *head1, Node2 *head2)
     fprintf(fp, "%d  \n", len);
     while (head2 != NULL)
     {
-        fprintf(fp, "%s  %d  %d  %d  %d  %d  %d  \n%s  \n%s  \n%s  \n", head2->data.equipmentID, head2->data.issueDate, head2->data.dueDate,
-                head2->data.returnDate, head2->data.NoOfDaysDelayed, head2->data.fine, head2->data.studentID, head2->data.equipmentName,
+        fprintf(fp, "%s %d %d %d %d %d %ld\n%s\n%s\n%s\n", head2->data.equipmentID, head2->data.issueDate, head2->data.dueDate,
+                head2->data.returnDate, head2->data.daysDelayed, head2->data.fine, head2->data.studentID, head2->data.equipment,
                 head2->data.incharge, head2->data.Sport);
         head2 = head2->next;
     }
@@ -1263,18 +1196,7 @@ int main()
         scanf("%d", &who);
         if (who == 2)
         {
-            if (Verification() == 1)
-            {
-                printf("\nLogged in Successfully\n");
-            }
-            else
-            {
-                printf("\nInvalid User\n");
-                who = 0;
-            }
-            printf("\n\tPress any key to continue ");
-            getchar();
-            getchar();
+            who = Verification();
         }
     } while (who != 1 && who != 2);
     char ch = 'y';
@@ -1286,28 +1208,27 @@ int main()
             system("cls");
             title();
             int user_choose;
-            printf("\n\t\tWelcome!!\nYou have logged into the student account.\n");
-            printf(" 1. Issue \n 2. Return \n 3. Check Availability of sports Equipment \n 4. History\n");
+            printf("\n\t\tWelcome!!\n You have logged into the student account.\n");
+            printf(" 1. Issue \n 2. Return \n 3. History \n 4. Check Availability of sports Equipment \n 5. Quit \n\n");
             printf(" Enter your work : ");
             scanf("%d", &user_choose);
             switch (user_choose)
             {
             case 1:
-                user_issue(head1, head2);
+                user_issue(head1, &head2);
                 break;
             case 2:
                 user_return(head1, head2);
                 break;
             case 3:
-                User_Check_Availability(head1, head2);
+                Student_History(head2);
                 break;
             case 4:
-                getchar();
-                int studId;
-                printf(" Enter your studentId : ");
-                scanf("%d", &studId);
-                Student_History(head2, studId);
+                User_Check_Availability(head1, head2);
                 break;
+            case 5:
+                Update_Database(head1, head2);
+                return 0;
             default:
                 break;
             }
@@ -1316,10 +1237,11 @@ int main()
             system("cls");
             title();
             int admin_choose;
-            printf("\n\t\tWelcome!!\nYou have logged into the admin account\n");
-            printf("1: Display equipments inventory \n2: Display equipments inventory by sports name \n3: Modify equipment quantity record \n4: Insert record of equipment\n\n");
+            printf("\n\t\tWelcome!!\n You have logged into the admin account\n");
+            printf("\n 1. Display equipments inventory record \n 2. Display equipments inventory records by sports name \n 3. Display sport equipment management records \n 4. Modify sports equipment quantity \n 5. Add a new record in equipment inventory \n 6. Quit \n\n");
             printf("Enter your work : ");
             scanf("%d", &admin_choose);
+            getchar();
             switch (admin_choose)
             {
             case 1:
@@ -1329,31 +1251,44 @@ int main()
                 DISPLAY_Equipment_Inventory_By_Sport(head1);
                 break;
             case 3:
-                Modify_Equipment_Inventory_Quantity(head1);
+                bubbleSort(head2);
+                Display_Sport_Equipment_Management(head2);
                 break;
             case 4:
+                Modify_Equipment_Inventory_Quantity(head1);
+                break;
+            case 5:
                 Equipment_Inventory equipInvent;
-                printf(" Fill details\n");
-                getchar();
-                printf("Quantity : ");
-                scanf("%d", &equipInvent.Quantity);
-                printf("Sport : ");
+                printf("\n Fill details\n");
+                printf("\n Sport : ");
                 scanf("%[^\n]", equipInvent.Sport);
-                printf("Equipment name : ");
-                scanf("%[^\n]", equipInvent.equipmentName);
+                getchar();
+                printf("\n Equipment name : ");
+                scanf("%[^\n]", equipInvent.equipment);
+                getchar();
+                printf("\n Quantity : ");
+                scanf("%d", &equipInvent.Quantity);
                 equipInvent.available = equipInvent.Quantity;
                 equipInvent.issueQuantity = 0;
                 Insert_Equipment_Inventory(&head1, equipInvent);
+                printf("\n Record added successfully\n");
+                printf("\n \t Press any key to exit");
+                getchar();
+                getchar();
                 break;
+            case 6:
+                Update_Database(head1, head2);
+                return 0;
             default:
                 break;
             }
             break;
         }
-        getchar();
-        printf("Enter you want to continue(y/n) : ");
-        scanf("%c", &ch);
-    } while (ch == 'y');
+        // getchar();
+        // printf("\n Enter you want to continue(y/n) : ");
+        // scanf("%c", &ch);
+        // } while (ch == 'y');
+    } while (true);
     // Update_Database(head1, head2);
     return 0;
 }
