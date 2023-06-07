@@ -1076,6 +1076,7 @@ void Modify_Equipment_Inventory_Quantity(Node1 *head1)
         getchar();
         return;
     }
+    printf("\n%s %s\n", sport, equip);
 
     curr = head1;
     int quantity;
@@ -1107,6 +1108,7 @@ void Modify_Equipment_Inventory_Quantity(Node1 *head1)
             printf(BLUE "\n Record modified successfully\n" RESET);
             break;
         }
+        curr = curr->next;
     }
     printf(GREEN "\n \t Press any key to exit" RESET);
     getchar();
