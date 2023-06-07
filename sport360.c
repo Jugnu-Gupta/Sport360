@@ -94,7 +94,7 @@ int Verification()
     system("cls");
     title();
     FILE *fp;
-    fp = fopen("./Admin/Admin.txt", "r");
+    fp = fopen("./Admin.txt", "r");
     Admin *root = NULL;
     // call the "createBinaryTree" function.
     CreateBinaryTree(&root, fp);
