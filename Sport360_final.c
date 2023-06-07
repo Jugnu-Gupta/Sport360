@@ -94,7 +94,7 @@ int Verification()
     system("cls");
     title();
     FILE *fp;
-    fp = fopen("./Admin/Admin.txt", "r");
+    fp = fopen("./Admin.txt", "r");
     Admin *root = NULL;
     // call the "createBinaryTree" function.
     CreateBinaryTree(&root, fp);
@@ -558,7 +558,7 @@ void equipment_issue(Node1 *head1, Node2 **head2, char sport[], char equip[])
         strcpy(equipManage.Sport, sport);
         strcpy(equipManage.equipment, equip);
 
-        printf(RED "\n Fill details(i.e use only lowercase)\n" RESET);
+        printf(MAGENTA "\n Fill details(i.e use only lowercase)\n" RESET);
         printf(YELLOW "\n Incharge : " RESET);
         scanf("%[^\n]", equipManage.incharge);
         printf(YELLOW "\n Student ID : " RESET);
@@ -598,7 +598,7 @@ void user_issue(Node1 *head1, Node2 **head2)
     printf(BLUE "\nSNo\tSport\n");
     printf("------------------\n" RESET);
     int i = 1;
-    printf(YELLOW " %d\t%s\n", i, curr->data.Sport);
+    printf(YELLOW " %d\t%s\n" RESET, i, curr->data.Sport);
     curr = curr->next;
     i++;
     while (curr != NULL)
@@ -616,12 +616,12 @@ void user_issue(Node1 *head1, Node2 **head2)
         }
         if (flag == 0)
         {
-            printf(" %d\t%s\n" RESET, i, curr->data.Sport);
+            printf(YELLOW " %d\t%s\n" RESET, i, curr->data.Sport);
             i++;
         }
         curr = curr->next;
     }
-    printf(YELLOW "Enter your desired sport : " RESET);
+    printf(CYAN "Choose your desired sport : " RESET);
     scanf("%d", &choice);
     getchar();
 
@@ -745,7 +745,7 @@ void User_Check_Availability(Node1 *head1, Node2 *head2)
     printf(BLUE "\nSNo\tSport\n");
     printf("------------------\n" RESET);
     int i = 1;
-    printf(" %d\t%s\n", i, curr->data.Sport);
+    printf(YELLOW " %d\t%s\n" RESET, i, curr->data.Sport);
     curr = curr->next;
     i++;
     while (curr != NULL)
@@ -768,7 +768,7 @@ void User_Check_Availability(Node1 *head1, Node2 *head2)
         }
         curr = curr->next;
     }
-    printf(CYAN "Enter your desired sport : " RESET);
+    printf(CYAN "Choose your desired sport : " RESET);
     scanf("%d", &choice);
     getchar();
 
@@ -867,7 +867,7 @@ void user_return(Node1 *head1, Node2 *head2)
     printf(MAGENTA "\t\t=======Return Sports Equipment=======\n" RESET);
     long int studId;
     char equipId[10];
-    printf(BLUE "\n Fill Details(i.e use only lowercase)\n" RESET);
+    printf(BLUE "\n Fill Details(i.e use only lowercase character)\n" RESET);
     printf(YELLOW "\n StudentID : " RESET);
     scanf("%ld", &studId);
     printf(YELLOW "\n EquipmentID : " RESET);
@@ -1114,6 +1114,27 @@ void Modify_Equipment_Inventory_Quantity(Node1 *head1)
     getchar();
 }
 
+void Add_record_equipment_inventory(Node1 **head1)
+{
+    Equipment_Inventory equipInvent;
+    printf(MAGENTA "\n Fill details(i.e use only lowercase character)\n" RESET);
+    printf(YELLOW "\n Sport : " RESET);
+    scanf("%[^\n]", equipInvent.Sport);
+    getchar();
+    printf(YELLOW "\n Equipment name : " RESET);
+    scanf("%[^\n]", equipInvent.equipment);
+    getchar();
+    printf(YELLOW "\n Quantity : " RESET);
+    scanf("%d", &equipInvent.Quantity);
+    equipInvent.available = equipInvent.Quantity;
+    equipInvent.issueQuantity = 0;
+    Insert_Equipment_Inventory(head1, equipInvent);
+    printf(CYAN "\n Record added successfully\n" RESET);
+    printf(GREEN "\n \t Press any key to exit" RESET);
+    getchar();
+    getchar();
+}
+
 void Import_Database(Node1 **head1, Node2 **head2)
 {
     FILE *fp;
@@ -1140,8 +1161,8 @@ void Import_Database(Node1 **head1, Node2 **head2)
         Insert_Sport_Equipment_Management(head2, equipManage);
     }
     fclose(fp);
-    Display_Equipment_Inventory(*head1);
-    Display_Sport_Equipment_Management(*head2);
+    // Display_Equipment_Inventory(*head1);
+    // Display_Sport_Equipment_Management(*head2);
 }
 
 void Update_Database(Node1 *head1, Node2 *head2)
@@ -1171,26 +1192,30 @@ void Update_Database(Node1 *head1, Node2 *head2)
     fclose(fp);
 }
 
+void login(int *who)
+{
+    do
+    {
+        system("cls");
+        title();
+        printf(MAGENTA "\n\tSelect Account\n" RESET);
+        printf(YELLOW "\n 1. User\n\n 2. Admin \n\n 3. Exit\n" RESET);
+        printf(BLUE "\nEnter your choice : " RESET);
+        scanf("%d", who);
+        if (*who == 2)
+        {
+            *who = Verification();
+        }
+    } while (*who != 1 && *who != 2 && *who != 3);
+}
+
 int main()
 {
     Node1 *head1 = NULL;
     Node2 *head2 = NULL;
     Import_Database(&head1, &head2);
     int who;
-    do
-    {
-        system("cls");
-        title();
-        printf(MAGENTA "\n\tSelect Account\n" RESET);
-        printf(YELLOW "\n 1. User\n\n 2. Admin \n" RESET);
-        printf(BLUE "\nEnter your identity : " RESET);
-        scanf("%d", &who);
-        if (who == 2)
-        {
-            who = Verification();
-        }
-    } while (who != 1 && who != 2);
-    char ch = 'y';
+    login(&who);
     do
     {
         switch (who)
@@ -1201,7 +1226,7 @@ int main()
             int user_choose;
             printf(MAGENTA "\n\t\tWelcome!!\n\n You have logged into the student account\n" RESET);
             printf(YELLOW "\n 1. Issue \n 2. Return \n 3. Check-in and check-out of sports equipment \n 4. Check Availability of sports equipment \n 5. Quit \n\n" RESET);
-            printf(BLUE " Enter your work : " RESET);
+            printf(BLUE " Choose your work : " RESET);
             scanf("%d", &user_choose);
             switch (user_choose)
             {
@@ -1218,8 +1243,8 @@ int main()
                 User_Check_Availability(head1, head2);
                 break;
             case 5:
-                Update_Database(head1, head2);
-                return 0;
+                login(&who);
+                break;
             default:
                 break;
             }
@@ -1230,7 +1255,7 @@ int main()
             int admin_choose;
             printf(MAGENTA "\n\t\tWelcome!!\n\n You have logged into the admin account\n" RESET);
             printf(YELLOW "\n 1. Display equipments inventory record \n 2. Display equipments inventory records by sports name \n 3. Display sport equipment management records \n 4. Modify sports equipment quantity \n 5. Add a new record in equipment inventory \n 6. Quit \n\n" RESET);
-            printf(BLUE "Enter your work : " RESET);
+            printf(BLUE " Choose your work : " RESET);
             scanf("%d", &admin_choose);
             getchar();
             switch (admin_choose)
@@ -1249,31 +1274,18 @@ int main()
                 Modify_Equipment_Inventory_Quantity(head1);
                 break;
             case 5:
-                Equipment_Inventory equipInvent;
-                printf(MAGENTA "\n Fill details(i.e use only lowercase)\n" RESET);
-                printf(YELLOW "\n Sport : " RESET);
-                scanf("%[^\n]", equipInvent.Sport);
-                getchar();
-                printf(YELLOW "\n Equipment name : " RESET);
-                scanf("%[^\n]", equipInvent.equipment);
-                getchar();
-                printf(YELLOW "\n Quantity : " RESET);
-                scanf("%d", &equipInvent.Quantity);
-                equipInvent.available = equipInvent.Quantity;
-                equipInvent.issueQuantity = 0;
-                Insert_Equipment_Inventory(&head1, equipInvent);
-                printf(CYAN "\n Record added successfully\n" RESET);
-                printf(GREEN "\n \t Press any key to exit" RESET);
-                getchar();
-                getchar();
+                Add_record_equipment_inventory(&head1);
                 break;
             case 6:
-                Update_Database(head1, head2);
-                return 0;
+                login(&who);
+                break;
             default:
                 break;
             }
             break;
+        case 3:
+            Update_Database(head1, head2);
+            return 0;
         }
     } while (true);
     return 0;
