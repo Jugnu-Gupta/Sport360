@@ -1,7 +1,4 @@
-24  
-1 5 0
-basket
-man
+23
 7 13 6
 volleyball
 volleyball
