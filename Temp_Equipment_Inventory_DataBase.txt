@@ -17,7 +17,7 @@ board
 7 13 6
 carrom
 carrom coins
-7 13 6
+6 13 7
 chess
 chess set
 7 13 6

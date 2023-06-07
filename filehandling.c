@@ -15,10 +15,13 @@ void addSpace(char word[])
 
 int main()
 {
-    char sport[50] = "kit";
-    char equip[50] = "bat";
-    addSpace(sport);
-    addSpace(equip);
-    printf("%s %s %s", sport, equip, "hi");
+    // char sport[50] = "kiT";
+    // char equip[50] = "kit";
+    char sport[50] = "kit bat";
+    char equip[50] = "kit bat";
+    // addSpace(sport);
+    // addSpace(equip);
+    if (strcmp(sport, equip) == 0)
+        printf("%s %s %s %.2d", sport, equip, "hi", 2);
     return 0;
 }
