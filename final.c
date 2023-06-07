@@ -100,12 +100,10 @@ int Verification()
     printf("\n Password : ");
     scanf("%s", pass);
     // call the function to "verify".
-    // return verify(root, userId, pass)
     int result;
     if (verify(root, userId, pass) == 1)
     {
         printf("\n Valid User\n");
-        // printf("\n Logged in Successfully\n");
         result = 2;
     }
     else
@@ -1132,8 +1130,6 @@ void Import_Database(Node1 **head1, Node2 **head2)
         Insert_Sport_Equipment_Management(head2, equipManage);
     }
     fclose(fp);
-    Display_Equipment_Inventory(*head1);
-    Display_Sport_Equipment_Management(*head2);
 }
 
 void Update_Database(Node1 *head1, Node2 *head2)
