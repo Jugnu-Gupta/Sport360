@@ -1076,7 +1076,6 @@ void Modify_Equipment_Inventory_Quantity(Node1 *head1)
         getchar();
         return;
     }
-    printf("\n%s %s\n", sport, equip);
 
     curr = head1;
     int quantity;
@@ -1085,9 +1084,9 @@ void Modify_Equipment_Inventory_Quantity(Node1 *head1)
         if (strcmp(curr->data.Sport, sport) == 0 && strcmp(curr->data.equipment, equip) == 0)
         {
             printf(BLUE "\n Initial Quantity : %d" RESET, curr->data.Quantity);
-            getchar();
             printf(YELLOW "\n Enter quantity: " RESET);
             scanf("%d", &quantity);
+            getchar();
             if (quantity >= curr->data.Quantity)
             {
                 curr->data.available = curr->data.Quantity - curr->data.issueQuantity;
@@ -1161,8 +1160,6 @@ void Import_Database(Node1 **head1, Node2 **head2)
         Insert_Sport_Equipment_Management(head2, equipManage);
     }
     fclose(fp);
-    // Display_Equipment_Inventory(*head1);
-    // Display_Sport_Equipment_Management(*head2);
 }
 
 void Update_Database(Node1 *head1, Node2 *head2)
